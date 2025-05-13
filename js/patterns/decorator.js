@@ -101,8 +101,11 @@ class DueDateDecorator extends TaskDecorator {
     
     getHtmlRepresentation() {
         let html = this.task.getHtmlRepresentation();
-        // Formatar a data no formato local
-        const formattedDate = this.dueDate.toLocaleDateString();
+        // Formatar a data no formato DD/MM/YYYY
+        const day = this.dueDate.getDate().toString().padStart(2, '0');
+        const month = (this.dueDate.getMonth() + 1).toString().padStart(2, '0');
+        const year = this.dueDate.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
         
         // Adicionar a data de vencimento após a data de criação
         html = html.replace(

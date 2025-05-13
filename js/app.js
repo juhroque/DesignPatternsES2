@@ -8,10 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
     configUI.setUIController(uiController);
     configUI.init();
     
+    // Inicializar o AccessUI (Proxy) e passar a referência do UIController
+    const accessUI = new AccessUI();
+    accessUI.setUIController(uiController);
+    accessUI.init();
+    
     // Renderizar estado inicial da interface
     uiController.renderTasks();
     uiController.renderNotifications();
     
     console.log('Aplicação de Gerenciamento de Tarefas inicializada com sucesso!');
-    console.log('Padrões de Design implementados: Singleton, Factory Method, Decorator e Observer.');
+    console.log('Padrões de Design implementados: Singleton, Proxy, Factory Method, Decorator e Observer.');
 });

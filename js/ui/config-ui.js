@@ -7,10 +7,8 @@ class ConfigUI {
         this.configPanel = document.getElementById('config-panel');
         this.themeSelector = document.getElementById('theme-selector');
         this.sortingSelector = document.getElementById('task-sorting');
-        this.showCompletedCheckbox = document.getElementById('show-completed');
         this.notificationOptions = {
             taskCreated: document.getElementById('notify-task-created'),
-            taskCompleted: document.getElementById('notify-task-completed'),
             taskDecorated: document.getElementById('notify-task-decorated')
         };
         this.resetButton = document.getElementById('reset-config');
@@ -52,15 +50,6 @@ class ConfigUI {
             });
         }
         
-        // Mostrar tarefas concluídas
-        if (this.showCompletedCheckbox) {
-            this.showCompletedCheckbox.addEventListener('change', (e) => {
-                configManager.set('showCompletedTasks', e.target.checked);
-                if (this.uiController) {
-                    this.uiController.renderTasks();
-                }
-            });
-        }
         
         // Notificações
         if (this.notificationOptions.taskCreated) {
@@ -69,11 +58,7 @@ class ConfigUI {
             });
         }
         
-        if (this.notificationOptions.taskCompleted) {
-            this.notificationOptions.taskCompleted.addEventListener('change', (e) => {
-                configManager.set('notifications.showTaskCompleted', e.target.checked);
-            });
-        }
+        
         
         if (this.notificationOptions.taskDecorated) {
             this.notificationOptions.taskDecorated.addEventListener('change', (e) => {
@@ -107,19 +92,10 @@ class ConfigUI {
         if (this.sortingSelector) {
             this.sortingSelector.value = configManager.get('taskSorting');
         }
-        
-        // Mostrar tarefas concluídas
-        if (this.showCompletedCheckbox) {
-            this.showCompletedCheckbox.checked = configManager.get('showCompletedTasks');
-        }
-        
+
         // Notificações
         if (this.notificationOptions.taskCreated) {
             this.notificationOptions.taskCreated.checked = configManager.get('notifications.showTaskCreated');
-        }
-        
-        if (this.notificationOptions.taskCompleted) {
-            this.notificationOptions.taskCompleted.checked = configManager.get('notifications.showTaskCompleted');
         }
         
         if (this.notificationOptions.taskDecorated) {

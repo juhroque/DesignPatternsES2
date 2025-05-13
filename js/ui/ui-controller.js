@@ -9,6 +9,9 @@ class UIController {
         this.taskSubject = new TaskSubject();
         this.notifications = [];
         
+        // Criar o proxy de controle de acesso
+        this.accessProxy = new AccessControlProxy(this.tasks);
+        
         // Inicializar observadores
         this.initObservers();
         
@@ -77,45 +80,56 @@ class UIController {
         
         // Usar o Factory Method para criar a tarefa
         const task = this.taskFactory.createTask(taskType, title, description);
-        this.tasks.push(task);
         
-        // Atualizar a interface
-        this.renderTasks();
-        
-        // Notificar observadores sobre a criação de tarefa se configurado
-        if (configManager.get('notifications.showTaskCreated')) {
-            this.taskSubject.notifyObservers(task, 'created');
+        // Usar o proxy para adicionar a tarefa com verificação de permissão
+        if (this.accessProxy.addTask(task)) {
+            // Atualizar a interface
+            this.renderTasks();
+            
+            // Notificar observadores sobre a criação de tarefa se configurado
+            if (configManager.get('notifications.showTaskCreated')) {
+                this.taskSubject.notifyObservers(task, 'created');
+            }
+            
+            // Limpar o formulário
+            document.getElementById('task-form').reset();
+        } else {
+            // Se o proxy negou permissão, mostrar mensagem
+            alert('Você não tem permissão para criar tarefas com seu nível de acesso atual.');
         }
-        
-        // Limpar o formulário
-        document.getElementById('task-form').reset();
     }
     
     // Atualizar o status de uma tarefa e notificar os observadores
     updateTaskStatus(taskId, status) {
-        const task = this.findTaskById(taskId);
-        if (task) {
-            task.setStatus(status);
+        // Usar o proxy para atualizar com verificação de permissão
+        if (this.accessProxy.updateTaskStatus(taskId, status)) {
+            const task = this.findTaskById(taskId);
             
             // Notificar observadores sobre a mudança de status
             // Verificar configurações para saber se deve notificar sobre conclusão
-            if (status === 'completed' && !configManager.get('notifications.showTaskCompleted')) {
-                // Não notificar se a configuração estiver desabilitada
-            } else {
+            if (status === 'completed' && configManager.get('notifications.showTaskCompleted')) {
+                this.taskSubject.notifyObservers(task, status);
+            } else if (status !== 'completed') {
                 this.taskSubject.notifyObservers(task, status);
             }
             
             // Atualizar a interface
             this.renderTasks();
+        } else {
+            // Se o proxy negou permissão, a interface já deve estar atualizada
+            // pelas verificações em AccessUI
         }
     }
     
     // Excluir uma tarefa
     deleteTask(taskId) {
-        const index = this.tasks.findIndex(task => task.getId() === taskId);
-        if (index !== -1) {
-            this.tasks.splice(index, 1);
+        // Usar o proxy para excluir com verificação de permissão
+        if (this.accessProxy.deleteTask(taskId)) {
+            // Atualizar a interface
             this.renderTasks();
+        } else {
+            // Se o proxy negou permissão, a interface já deve estar atualizada
+            // pelas verificações em AccessUI
         }
     }
     
@@ -152,16 +166,18 @@ class UIController {
             }
         }
         
-        // Atualizar a tarefa na lista
-        const index = this.tasks.findIndex(t => t.getId() === taskId);
-        if (index !== -1) {
-            this.tasks[index] = task;
+        // Usar o proxy para decorar com verificação de permissão
+        if (this.accessProxy.decorateTask(taskId, task)) {
+            // Atualizar a interface
             this.renderTasks();
             
             // Notificar sobre decoração se configurado
             if (configManager.get('notifications.showTaskDecorated')) {
                 this.taskSubject.notifyObservers(task, 'decorated');
             }
+        } else {
+            // Se o proxy negou permissão, mostrar mensagem
+            alert('Você não tem permissão para decorar tarefas com seu nível de acesso atual.');
         }
     }
     
@@ -178,6 +194,26 @@ class UIController {
     addNotification(notification) {
         this.notifications.push(notification);
         this.renderNotifications();
+    }
+    
+    /**
+     * Atualiza a interface com base no nível de acesso
+     * @param {string} accessLevel - O nível de acesso atual
+     */
+    updateUIForAccessLevel(accessLevel) {
+        // Renderizar tarefas para atualizar a visualização
+        this.renderTasks();
+        
+        // Aqui podemos adicionar lógica adicional específica para cada nível de acesso
+        const formContainer = document.getElementById('task-form').closest('.card');
+        const decoratorContainer = document.getElementById('apply-decorators').closest('.card');
+        
+        if (formContainer && decoratorContainer) {
+            // No modo visualizador, podemos reduzir a opacidade dos painéis de criação/decoração
+            const isViewerMode = accessLevel === AccessLevels.VIEWER;
+            formContainer.style.opacity = isViewerMode ? '0.6' : '1';
+            decoratorContainer.style.opacity = isViewerMode ? '0.6' : '1';
+        }
     }
     
     // Renderizar a lista de tarefas na interface do usuário
@@ -223,12 +259,20 @@ class UIController {
                 const bHtml = b.getHtmlRepresentation();
                 
                 // Extrair datas de vencimento (se existirem)
-                const aDateMatch = aHtml.match(/Vencimento: ([0-9]{4}-[0-9]{2}-[0-9]{2})/);
-                const bDateMatch = bHtml.match(/Vencimento: ([0-9]{4}-[0-9]{2}-[0-9]{2})/);
+                const aDateMatch = aHtml.match(/Vencimento: (\d{1,2}\/\d{1,2}\/\d{4})/);
+                const bDateMatch = bHtml.match(/Vencimento: (\d{1,2}\/\d{1,2}\/\d{4})/);
                 
                 // Se ambas têm data de vencimento, comparar
                 if (aDateMatch && bDateMatch) {
-                    return new Date(aDateMatch[1]) - new Date(bDateMatch[1]);
+                    // Converter para objetos Date para comparação
+                    // Formato DD/MM/YYYY para Date
+                    const aParts = aDateMatch[1].split('/');
+                    const bParts = bDateMatch[1].split('/');
+                    
+                    const aDate = new Date(aParts[2], aParts[1] - 1, aParts[0]);
+                    const bDate = new Date(bParts[2], bParts[1] - 1, bParts[0]);
+                    
+                    return aDate - bDate;
                 }
                 
                 // Priorizar tarefas com data de vencimento
