@@ -13,10 +13,8 @@ class ConfigManager {
         this.config = {
             theme: 'light', // tema: light ou dark
             taskSorting: 'created', // ordenação: created, priority, dueDate
-            showCompletedTasks: true, // mostrar tarefas concluídas
             notifications: {
                 showTaskCreated: true,
-                showTaskCompleted: true,
                 showTaskDecorated: true
             }
         };
@@ -99,10 +97,8 @@ class ConfigManager {
         this.config = {
             theme: 'light',
             taskSorting: 'created',
-            showCompletedTasks: true,
             notifications: {
                 showTaskCreated: true,
-                showTaskCompleted: true,
                 showTaskDecorated: true
             }
         };
