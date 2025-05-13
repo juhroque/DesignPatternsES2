@@ -110,6 +110,11 @@ class UIController {
             
             // Atualizar a interface
             this.renderTasks();
+            
+            // Se a tarefa foi concluída, atualizar o painel de aprovação
+            if (status === 'concluida' && window.approvalUI) {
+                window.approvalUI.renderApprovalTasks();
+            }
         } else {
             // Se o proxy negou permissão, a interface já deve estar atualizada
             // pelas verificações em AccessUI

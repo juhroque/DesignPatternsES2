@@ -1,0 +1,46 @@
+/* Estilos para o padrão Chain of Responsibility (Aprovação de Tarefas) */
+
+/* Estilo base para tarefas em aprovação */
+.task-approval-item {
+    border-left: 4px solid #17a2b8;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.task-approval-item:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para os diferentes estágios de aprovação */
+.approved-viewer {
+    border-left-color: #28a745;
+}
+
+.approved-editor {
+    border-left-color: #fd7e14;
+}
+
+.approved-admin {
+    border-left-color: #dc3545;
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+.fully-approved {
+    border-left-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* Layout para badges de aprovação */
+.approval-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* Estilo para o painel de informações */
+.approval-info {
+    background-color: rgba(23, 162, 184, 0.05);
+    border-radius: 5px;
+    padding: 15px;
+    border-left: 4px solid #17a2b8;
+} 
