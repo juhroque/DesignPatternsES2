@@ -106,12 +106,7 @@ class UIController {
             const task = this.findTaskById(taskId);
             
             // Notificar observadores sobre a mudança de status
-            // Verificar configurações para saber se deve notificar sobre conclusão
-            if (status === 'completed' && configManager.get('notifications.showTaskCompleted')) {
-                this.taskSubject.notifyObservers(task, status);
-            } else if (status !== 'completed') {
-                this.taskSubject.notifyObservers(task, status);
-            }
+            this.taskSubject.notifyObservers(task, status);
             
             // Atualizar a interface
             this.renderTasks();
@@ -237,11 +232,6 @@ class UIController {
         
         // Filtrar e ordenar tarefas com base nas configurações
         let filteredTasks = [...this.tasks];
-        
-        // Filtrar tarefas concluídas se a configuração estiver desativada
-        if (!configManager.get('showCompletedTasks')) {
-            filteredTasks = filteredTasks.filter(task => task.getStatus() !== 'completed');
-        }
         
         // Ordenar as tarefas conforme configuração
         const sortingMethod = configManager.get('taskSorting');
