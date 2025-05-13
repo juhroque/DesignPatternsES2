@@ -143,6 +143,7 @@
                                     <option value="personal">Pessoal</option>
                                     <option value="work">Trabalho</option>
                                     <option value="study">Estudo</option>
+                                    <option value="meeting">Reunião</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Criar Tarefa</button>
@@ -188,6 +189,12 @@
                                     Data de Vencimento
                                 </label>
                                 <input type="date" class="form-control form-control-sm mt-1" id="due-date-input">
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confidencial">
+                                <label class="form-check-label" for="confidencial">
+                                    Confidencial
+                                </label>
                             </div>
                         </div>
                         <button id="apply-decorators" class="btn btn-success w-100">Aplicar Recursos</button>
@@ -237,6 +244,12 @@
                                 <input class="form-check-input" type="checkbox" id="log-observer" checked>
                                 <label class="form-check-label" for="log-observer">
                                     Log no Console
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="tel-observer" checked>
+                                <label class="form-check-label" for="tel-observer">
+                                    Notificação por Telefone
                                 </label>
                             </div>
                         </div>

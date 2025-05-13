@@ -38,6 +38,10 @@ class Notification {
                 typeClass = 'notification-log';
                 icon = '📝';
                 break;
+            case 'telefone':
+                typeClass = 'notification-tel';
+                icon = '📞';
+                break;
         }
         
         return `

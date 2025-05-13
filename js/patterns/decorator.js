@@ -115,3 +115,25 @@ class DueDateDecorator extends TaskDecorator {
         return html;
     }
 }
+
+class ConfidentialDecorator extends TaskDecorator {
+    constructor(task) {
+        super(task);
+
+    }
+
+    getTitle() {
+        return `🔒 ${this.task.getTitle()}`;
+    }
+
+    getDescription() {
+        return 'Descrição confidencial.';
+    }
+
+    getHtmlRepresentation() {
+        let html = this.task.getHtmlRepresentation();
+        html = html.replace('list-group-item task-item', 'list-group-item task-item confidential-task');
+        html = html.replace('<span class="badge', '<span class="badge bg-dark me-2">CONFIDENCIAL</span><span class="badge');
+        return html;
+    }
+}

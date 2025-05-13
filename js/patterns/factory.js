@@ -20,6 +20,8 @@ class TaskFactory {
                 return new WorkTask(id, title, description);
             case 'study':
                 return new StudyTask(id, title, description);
+            case 'meeting': // ✅ Novo case
+                return new MeetingTask(id, title, description);
             default:
                 throw new Error(`Tipo de tarefa desconhecido: ${type}`);
         }

@@ -109,3 +109,21 @@ class LogObserver extends Observer {
         this.notificationCallback(new Notification(message, 'log'));
     }
 }
+
+class TelefoneObserver extends Observer {
+    constructor(notificationCallback) {
+        super();
+        this.notificationCallback = notificationCallback;
+    }
+    
+    update(task, status) {
+        const statusText = status === 'em_andamento' ? 'em andamento' : status;
+        const message = `TELEFONE: Notificação - A tarefa "${task.getTitle()}" do tipo ${task.getType()} foi atualizada para "${statusText}".`;
+        
+        // Simular ligação telefônica (apenas log)
+        console.log(`Realizando chamada telefônica: ${message}`);
+        
+        // Adicionar à lista de notificações
+        this.notificationCallback(new Notification(message, 'telefone'));
+    }
+}

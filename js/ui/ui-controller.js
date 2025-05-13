@@ -30,6 +30,9 @@ class UIController {
             this.taskSubject.addObserver(new EmailObserver(this.addNotification.bind(this)));
         }
         
+        if (document.getElementById('tel-observer').checked) {
+            this.taskSubject.addObserver(new TelefoneObserver(this.addNotification.bind(this)));
+        }
         if (document.getElementById('log-observer').checked) {
             this.taskSubject.addObserver(new LogObserver(this.addNotification.bind(this)));
         }
@@ -65,6 +68,7 @@ class UIController {
         document.getElementById('screen-observer').addEventListener('change', this.updateObservers.bind(this));
         document.getElementById('email-observer').addEventListener('change', this.updateObservers.bind(this));
         document.getElementById('log-observer').addEventListener('change', this.updateObservers.bind(this));
+        document.getElementById('tel-observer').addEventListener('change', this.updateObservers.bind(this));
     }
     
     // Criar uma nova tarefa usando o Factory Method
@@ -161,11 +165,19 @@ class UIController {
         // Aplicar decorador de data de vencimento, se selecionado
         if (document.getElementById('due-date').checked) {
             const dueDate = document.getElementById('due-date-input').value;
+
             if (dueDate) {
                 task = new DueDateDecorator(task, dueDate);
             }
         }
         
+        if (document.getElementById('confidencial').checked) {
+            const dueDate = document.getElementById('confidencial').value;
+            if (dueDate) {
+                task = new ConfidentialDecorator(task);
+            }
+        }
+
         // Usar o proxy para decorar com verificação de permissão
         if (this.accessProxy.decorateTask(taskId, task)) {
             // Atualizar a interface

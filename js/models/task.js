@@ -99,3 +99,15 @@ class StudyTask extends Task {
         return baseHtml.replace('list-group-item task-item', 'list-group-item task-item task-study');
     }
 }
+
+class MeetingTask extends Task {
+
+    getType() {
+        return 'Reunião';
+    }
+
+    getHtmlRepresentation() {
+        const baseHtml = super.getHtmlRepresentation();
+        return baseHtml.replace('list-group-item task-item', 'list-group-item task-item task-meeting');
+    }
+}
