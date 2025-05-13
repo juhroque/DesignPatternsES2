@@ -1,5 +1,6 @@
 body {
     background-color: #f8f9fa;
+    transition: all 0.3s ease;
 }
 
 header {
@@ -8,11 +9,13 @@ header {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 30px;
+    transition: all 0.3s ease;
 }
 
 .card {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-bottom: 20px;
+    transition: all 0.3s ease;
 }
 
 .card-header h3 {
@@ -111,8 +114,117 @@ pre {
     padding: 1rem;
     border-radius: 0.25rem;
     overflow-x: auto;
+    transition: all 0.3s ease;
 }
 
 code {
     color: #d63384;
+}
+
+/* Estilos para o painel de configurações */
+#config-panel {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.config-section {
+    margin-bottom: 1.5rem;
+}
+
+.config-section h5 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* Tema escuro */
+.dark-theme {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+
+.dark-theme header {
+    background-color: #343a40;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dark-theme .card {
+    background-color: #343a40;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.dark-theme .card-header {
+    background-color: #495057;
+}
+
+.dark-theme .card-body {
+    background-color: #343a40;
+}
+
+.dark-theme .list-group-item {
+    background-color: #495057;
+    color: #f8f9fa;
+    border-color: #6c757d;
+}
+
+.dark-theme .form-control,
+.dark-theme .form-select {
+    background-color: #495057;
+    border-color: #6c757d;
+    color: #f8f9fa;
+}
+
+.dark-theme .form-control:focus,
+.dark-theme .form-select:focus {
+    background-color: #495057;
+    color: #f8f9fa;
+}
+
+.dark-theme .form-check-input {
+    background-color: #495057;
+    border-color: #6c757d;
+}
+
+.dark-theme .form-check-label {
+    color: #f8f9fa;
+}
+
+.dark-theme pre {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+.dark-theme code {
+    color: #e83e8c;
+}
+
+.dark-theme .accordion-button {
+    background-color: #495057;
+    color: #f8f9fa;
+}
+
+.dark-theme .accordion-button:not(.collapsed) {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+.dark-theme .accordion-body {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+.dark-theme .text-muted {
+    color: #adb5bd !important;
+}
+
+.dark-theme .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Ajustes para decoradores no tema escuro */
+.dark-theme .high-priority-task {
+    background-color: rgba(220, 53, 69, 0.2);
+}
+
+.dark-theme .due-date {
+    color: #adb5bd;
 }

@@ -82,6 +82,11 @@ class UIController {
         // Atualizar a interface
         this.renderTasks();
         
+        // Notificar observadores sobre a criação de tarefa se configurado
+        if (configManager.get('notifications.showTaskCreated')) {
+            this.taskSubject.notifyObservers(task, 'created');
+        }
+        
         // Limpar o formulário
         document.getElementById('task-form').reset();
     }
@@ -93,7 +98,12 @@ class UIController {
             task.setStatus(status);
             
             // Notificar observadores sobre a mudança de status
-            this.taskSubject.notifyObservers(task, status);
+            // Verificar configurações para saber se deve notificar sobre conclusão
+            if (status === 'completed' && !configManager.get('notifications.showTaskCompleted')) {
+                // Não notificar se a configuração estiver desabilitada
+            } else {
+                this.taskSubject.notifyObservers(task, status);
+            }
             
             // Atualizar a interface
             this.renderTasks();
@@ -147,6 +157,11 @@ class UIController {
         if (index !== -1) {
             this.tasks[index] = task;
             this.renderTasks();
+            
+            // Notificar sobre decoração se configurado
+            if (configManager.get('notifications.showTaskDecorated')) {
+                this.taskSubject.notifyObservers(task, 'decorated');
+            }
         }
     }
     
@@ -184,7 +199,45 @@ class UIController {
         container.innerHTML = '';
         let selectOptions = '<option value="">Selecione uma tarefa...</option>';
         
-        this.tasks.forEach(task => {
+        // Filtrar e ordenar tarefas com base nas configurações
+        let filteredTasks = [...this.tasks];
+        
+        // Filtrar tarefas concluídas se a configuração estiver desativada
+        if (!configManager.get('showCompletedTasks')) {
+            filteredTasks = filteredTasks.filter(task => task.getStatus() !== 'completed');
+        }
+        
+        // Ordenar as tarefas conforme configuração
+        const sortingMethod = configManager.get('taskSorting');
+        if (sortingMethod === 'priority') {
+            // Ordenar por prioridade (tarefas de alta prioridade primeiro)
+            filteredTasks.sort((a, b) => {
+                const aHasPriority = a.getHtmlRepresentation().includes('high-priority-task');
+                const bHasPriority = b.getHtmlRepresentation().includes('high-priority-task');
+                return (bHasPriority ? 1 : 0) - (aHasPriority ? 1 : 0);
+            });
+        } else if (sortingMethod === 'dueDate') {
+            // Ordenar por data de vencimento (se disponível)
+            filteredTasks.sort((a, b) => {
+                const aHtml = a.getHtmlRepresentation();
+                const bHtml = b.getHtmlRepresentation();
+                
+                // Extrair datas de vencimento (se existirem)
+                const aDateMatch = aHtml.match(/Vencimento: ([0-9]{4}-[0-9]{2}-[0-9]{2})/);
+                const bDateMatch = bHtml.match(/Vencimento: ([0-9]{4}-[0-9]{2}-[0-9]{2})/);
+                
+                // Se ambas têm data de vencimento, comparar
+                if (aDateMatch && bDateMatch) {
+                    return new Date(aDateMatch[1]) - new Date(bDateMatch[1]);
+                }
+                
+                // Priorizar tarefas com data de vencimento
+                return aDateMatch ? -1 : (bDateMatch ? 1 : 0);
+            });
+        }
+        // Para 'created' (padrão), mantém a ordem original
+        
+        filteredTasks.forEach(task => {
             container.innerHTML += task.getHtmlRepresentation();
             selectOptions += `<option value="${task.getId()}">${task.getTitle()}</option>`;
         });

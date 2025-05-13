@@ -14,6 +14,83 @@
             <h4 class="text-center text-muted">Demonstração de Design Patterns</h4>
         </header>
 
+        <!-- Painel de Configurações (Singleton) -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                        <h3>Configurações <small>(Singleton)</small></h3>
+                        <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#config-panel">
+                            <i class="bi bi-gear"></i> Mostrar/Ocultar
+                        </button>
+                    </div>
+                    <div class="card-body collapse" id="config-panel">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="config-section">
+                                    <h5>Aparência</h5>
+                                    <div class="mb-3">
+                                        <label for="theme-selector" class="form-label">Tema</label>
+                                        <select class="form-select" id="theme-selector">
+                                            <option value="light">Claro</option>
+                                            <option value="dark">Escuro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="config-section">
+                                    <h5>Tarefas</h5>
+                                    <div class="mb-3">
+                                        <label for="task-sorting" class="form-label">Ordenar por</label>
+                                        <select class="form-select" id="task-sorting">
+                                            <option value="created">Data de Criação</option>
+                                            <option value="priority">Prioridade</option>
+                                            <option value="dueDate">Data de Vencimento</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="show-completed" checked>
+                                        <label class="form-check-label" for="show-completed">
+                                            Mostrar tarefas concluídas
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="config-section">
+                                    <h5>Notificações</h5>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="notify-task-created" checked>
+                                        <label class="form-check-label" for="notify-task-created">
+                                            Notificar criação de tarefas
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="notify-task-completed" checked>
+                                        <label class="form-check-label" for="notify-task-completed">
+                                            Notificar conclusão de tarefas
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="notify-task-decorated" checked>
+                                        <label class="form-check-label" for="notify-task-decorated">
+                                            Notificar decoração de tarefas
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button id="reset-config" class="btn btn-outline-danger">Restaurar Configurações Padrão</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <!-- Painel esquerdo - Criação de tarefas (Factory Method) -->
             <div class="col-md-4">
@@ -156,9 +233,39 @@
                     </div>
                     <div class="card-body">
                         <div class="accordion" id="patternsAccordion">
+                            <!-- Singleton -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFactory">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSingleton">
+                                        Singleton (Padrão Criacional)
+                                    </button>
+                                </h2>
+                                <div id="collapseSingleton" class="accordion-collapse collapse show" data-bs-parent="#patternsAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Objetivo:</strong> Garantir que uma classe tenha apenas uma instância e fornecer um ponto global de acesso a ela.</p>
+                                        <p><strong>Implementação:</strong> Criamos um gerenciador de configurações (ConfigManager) que mantém uma única instância para toda a aplicação, gerenciando as preferências do usuário.</p>
+                                        <p><strong>Benefício:</strong> Centraliza o acesso às configurações da aplicação, evitando duplicação de dados e garantindo consistência.</p>
+                                        <pre><code>// Exemplo simplificado do Singleton
+class ConfigManager {
+    constructor() {
+        if (ConfigManager.instance) {
+            return ConfigManager.instance;
+        }
+        this.config = {/* configurações padrão */};
+        ConfigManager.instance = this;
+    }
+    
+    // Métodos para acessar/modificar configurações
+    get(key) { /* implementação */ }
+    set(key, value) { /* implementação */ }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFactory">
                                         Factory Method (Padrão Criacional)
                                     </button>
                                 </h2>
@@ -180,6 +287,7 @@ class TaskFactory {
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDecorator">
@@ -200,6 +308,7 @@ class HighPriorityDecorator extends TaskDecorator {
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseObserver">
@@ -251,13 +360,16 @@ class TaskSubject {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"></script>
     
     <!-- Scripts da aplicação -->
     <script src="js/models/task.js"></script>
     <script src="js/models/notification.js"></script>
+    <script src="js/patterns/singleton.js"></script>
     <script src="js/patterns/factory.js"></script>
     <script src="js/patterns/decorator.js"></script>
     <script src="js/patterns/observer.js"></script>
+    <script src="js/ui/config-ui.js"></script>
     <script src="js/ui/ui-controller.js"></script>
     <script src="js/app.js"></script>
 </body>
